@@ -12,6 +12,7 @@ public class Encryption {
             for (int i = 0; i < text.length(); i++) {
                 char currentChar = text.charAt(i);
                 boolean isUpperCase = Character.isUpperCase(currentChar);
+
                 int indexInAlphabet = findIndexInAlphabet(Character.toLowerCase(currentChar));
                 if (indexInAlphabet != -1) {
                     int encryptedIndex = (indexInAlphabet + key) % ALPHABET.length;
