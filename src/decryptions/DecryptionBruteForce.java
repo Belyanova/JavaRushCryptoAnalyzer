@@ -1,24 +1,59 @@
 package decryptions;
 
 import handlers.FileHandler;
+import alphabets.RussianAlphabet;
+import alphabets.RussianWords;
 
-import static alphabets.RussianWords.RUSSIANWORDS;
-import static alphabets.RussianAlphabet.ALPHABET;
 import static handlers.AlphabetHandler.findIndexInAlphabet;
 
 public class DecryptionBruteForce {
+    public static String decryptionUsingKey(int key, String encryptedText) {
+        StringBuilder decryptedText = new StringBuilder();
+        for (int i = 0; i < encryptedText.length(); i++) {
+            char currentChar = encryptedText.charAt(i);
+            boolean isUpperCase = Character.isUpperCase(currentChar);
 
-//реализация метода
-    public static String decryptionBruteForce(String textForDecryption){
-        return textForDecryption;
+            int indexInAlphabet = findIndexInAlphabet(Character.toLowerCase(currentChar));
+            if (indexInAlphabet != -1) {
+                int decryptedIndex = (indexInAlphabet - key + RussianAlphabet.ALPHABET.length) % RussianAlphabet.ALPHABET.length;
+                char decryptedChar = RussianAlphabet.ALPHABET[decryptedIndex];
+                decryptedChar = isUpperCase ? Character.toUpperCase(decryptedChar) : decryptedChar;
+                decryptedText.append(decryptedChar);
+            } else {
+                decryptedText.append(currentChar);
+            }
+        }
+        return decryptedText.toString();
     }
 
-    public static void writeDecryptionBruteForceResultToFile(String pathToSourceFile, String pathToFileToWrite){
-        String textFromFile = FileHandler.readFile(pathToSourceFile);
-        System.out.println("Текст из файла для расшифровки: " + textFromFile);
-        String decryptionResult = decryptionBruteForce(textFromFile);
-        System.out.println("Результат расшифровки Brute Force : " + decryptionResult);
-        FileHandler.writeFile(pathToFileToWrite, decryptionResult);
+    public static int bruteForceKeyFinder(String encryptedText) {
+        for (int key = 1; key < RussianAlphabet.ALPHABET.length; key++) { // Key can't be 0
+            String decryptedText = decryptionUsingKey(key, encryptedText);
+            int foundWords = 0;
+            for (String word : RussianWords.RUSSIANWORDS) {
+                if (decryptedText.contains(word)) {
+                    foundWords++;
+                }
+            }
+
+            if (foundWords >= 5) {
+                return key;
+            }
+        }
+        return -1;
     }
 
+    public static void writeDecryptionBruteForceResultToFile(String pathToEncryptedFile, String pathToFileToWrite) {
+        String encryptedText = FileHandler.readFile(pathToEncryptedFile);
+        System.out.println("Зашифрованный текст из файла: " + encryptedText);
+
+        int key = bruteForceKeyFinder(encryptedText);
+        if (key != -1) {
+            String decryptionResult = decryptionUsingKey(key, encryptedText);
+            System.out.println("Результат расшифровки: " + decryptionResult);
+            FileHandler.writeFile(pathToFileToWrite, decryptionResult);
+        } else {
+            System.err.println("Не удалось найти ключ.");
+        }
+    }
 }
