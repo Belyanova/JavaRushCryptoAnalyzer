@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+import static decryptions.DecryptionStatisticalAnalysis.writeDecryptionStatisticalAnalysis;
 import static decryptions.DecryptionUsingKey.writeDecryptionUsingKeyResultToFile;
 import static decryptions.DecryptionBruteForce.writeDecryptionBruteForceResultToFile;
 import static encryptions.Encryption.writeEncryptionResultToFile;
@@ -7,6 +8,7 @@ import static encryptions.Encryption.writeEncryptionResultToFile;
 public class ConsoleRunner {
     public static String pathToFileToWrite = null;
     public static String pathToSourceFile = null;
+    public static String representativeText = null;
     public static int key = 0;
 
     public static void consoleRunner() {
@@ -15,22 +17,20 @@ public class ConsoleRunner {
             int method = selectMethod(scanner);
             switch (method) {
                 case 1:
-                    //Шифрование по ключу
                     selectFilesForEncryption(scanner);
                     writeEncryptionResultToFile(key, pathToSourceFile, pathToFileToWrite);
                     break;
                 case 2:
-                    //Расшифровка по ключу
                     selectFilesForDecryptionUsingKey(scanner);
                     writeDecryptionUsingKeyResultToFile(key, pathToSourceFile, pathToFileToWrite);
                     break;
                 case 3:
-                    //Расшифровка Brute Force
                     selectFilesForDecryptionBruteForce(scanner);
                     writeDecryptionBruteForceResultToFile(pathToSourceFile, pathToFileToWrite);
                     break;
                 case 4:
-                    //Расшифровка Статический анализ
+                    selectFilesForDecryptionStatisticalAnalysis(scanner);
+                    writeDecryptionStatisticalAnalysis(representativeText, pathToSourceFile, pathToFileToWrite);
                     break;
                 default:
                     System.err.println("Некорректный выбор метода.");
@@ -93,6 +93,20 @@ public class ConsoleRunner {
             pathToSourceFile = scanner.nextLine();
             System.out.println("Введите путь к файлу для записи расшифрованного текста: ");
             pathToFileToWrite = scanner.nextLine();
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка ввода: " + e.getMessage());
+        }
+    }
+
+    protected static void selectFilesForDecryptionStatisticalAnalysis(Scanner scanner) {
+        try {
+            System.out.println("Введите путь к файлу с зашифрованным текстом: ");
+            scanner.nextLine();
+            pathToSourceFile = scanner.nextLine();
+            System.out.println("Введите путь к файлу для записи расшифрованного текста: ");
+            pathToFileToWrite = scanner.nextLine();
+            System.out.println("Введите пример репрезентативного текста: ");
+            representativeText = scanner.nextLine();
         } catch (Exception e) {
             throw new RuntimeException("Ошибка ввода: " + e.getMessage());
         }
