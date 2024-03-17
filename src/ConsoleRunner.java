@@ -6,42 +6,45 @@ import static decryptions.DecryptionBruteForce.writeDecryptionBruteForceResultTo
 import static encryptions.Encryption.writeEncryptionResultToFile;
 
 public class ConsoleRunner {
-    public static String pathToFileToWrite = null;
-    public static String pathToSourceFile = null;
-    public static String representativeText = null;
-    public static int key = 0;
-
     public static void consoleRunner() {
-        Scanner scanner = new Scanner(System.in);
-        try {
+        try (Scanner scanner = new Scanner(System.in)) {
             int method = selectMethod(scanner);
             switch (method) {
                 case 1:
-                    selectFilesForEncryption(scanner);
-                    writeEncryptionResultToFile(key, pathToSourceFile, pathToFileToWrite);
+                    int keyForEncryption = selectKey(scanner);
+                    String pathToSourceFileForEncryption = selectPathToSourceFile(scanner);
+                    String pathToFileToWriteForEncryption = selectPathToFileToWrite(scanner);
+                    writeEncryptionResultToFile(keyForEncryption, pathToSourceFileForEncryption,
+                            pathToFileToWriteForEncryption);
                     break;
                 case 2:
-                    selectFilesForDecryptionUsingKey(scanner);
-                    writeDecryptionUsingKeyResultToFile(key, pathToSourceFile, pathToFileToWrite);
+                    int keyForDecryption = selectKey(scanner);
+                    String pathToSourceFileForDecryptionUsingKey = selectPathToSourceFile(scanner);
+                    String pathToFileToWriteForDecryptionUsingKey = selectPathToFileToWrite(scanner);
+                    writeDecryptionUsingKeyResultToFile(keyForDecryption, pathToSourceFileForDecryptionUsingKey,
+                            pathToFileToWriteForDecryptionUsingKey);
                     break;
                 case 3:
-                    selectFilesForDecryptionBruteForce(scanner);
-                    writeDecryptionBruteForceResultToFile(pathToSourceFile, pathToFileToWrite);
+                    String pathToSourceFileForDecryptionBruteForce = selectPathToSourceFile(scanner);
+                    String pathToFileToWriteForDecryptionBruteForce = selectPathToFileToWrite(scanner);
+                    writeDecryptionBruteForceResultToFile(pathToSourceFileForDecryptionBruteForce,
+                            pathToFileToWriteForDecryptionBruteForce);
                     break;
                 case 4:
-                    selectFilesForDecryptionStatisticalAnalysis(scanner);
-                    writeDecryptionStatisticalAnalysis(representativeText, pathToSourceFile, pathToFileToWrite);
+                    String representativeText = selectRepresentativeText(scanner);
+                    String pathToSourceFileForDecryptionStatisticalAnalysis = selectPathToSourceFile(scanner);
+                    String pathToFileToWriteForDecryptionStatisticalAnalysis = selectPathToFileToWrite(scanner);
+                    writeDecryptionStatisticalAnalysis(representativeText, pathToSourceFileForDecryptionStatisticalAnalysis,
+                            pathToFileToWriteForDecryptionStatisticalAnalysis);
                     break;
                 default:
                     System.err.println("Некорректный выбор метода.");
                     break;
             }
-        } finally {
-            scanner.close();
         }
     }
 
-    protected static int selectMethod(Scanner scanner) {
+    private static int selectMethod(Scanner scanner) {
         int method = 0;
         try {
             System.out.println("Программа может работать в двух режимах: Шифрование / Расшифровка");
@@ -56,59 +59,44 @@ public class ConsoleRunner {
         return method;
     }
 
-    protected static void selectFilesForEncryption(Scanner scanner) {
+    private static int selectKey(Scanner scanner){
         try {
-            System.out.println("Введите путь к файлу с оригинальным текстом: ");
-            scanner.nextLine();
-            pathToSourceFile = scanner.nextLine();
             System.out.println("Введите значение ключа: ");
-            key = scanner.nextInt();
-            scanner.nextLine();
-            System.out.println("Введите путь к файлу для записи зашифрованного текста: ");
-            pathToFileToWrite = scanner.nextLine();
+            int key = scanner.nextInt();
+            return key;
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка ввода: " + e.getMessage());
+            throw new RuntimeException("Ошибка ввода ключа: " + e.getMessage());
         }
     }
 
-    protected static void selectFilesForDecryptionUsingKey(Scanner scanner) {
+    private static String selectPathToSourceFile(Scanner scanner){
         try {
-            System.out.println("Введите путь к файлу с зашифрованным текстом: ");
+            System.out.println("Введите путь к файлу c текстом: ");
             scanner.nextLine();
-            pathToSourceFile = scanner.nextLine();
-            System.out.println("Введите значение ключа: ");
-            key = scanner.nextInt();
-            scanner.nextLine();
-            System.out.println("Введите путь к файлу для записи расшифрованного текста: ");
-            pathToFileToWrite = scanner.nextLine();
+            String pathToSourceFile = scanner.nextLine();
+            return pathToSourceFile;
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка ввода: " + e.getMessage());
+            throw new RuntimeException("Ошибка ввода пути к файлу: " + e.getMessage());
         }
     }
 
-    protected static void selectFilesForDecryptionBruteForce(Scanner scanner) {
+    private static String selectPathToFileToWrite(Scanner scanner){
         try {
-            System.out.println("Введите путь к файлу с зашифрованным текстом: ");
-            scanner.nextLine();
-            pathToSourceFile = scanner.nextLine();
-            System.out.println("Введите путь к файлу для записи расшифрованного текста: ");
-            pathToFileToWrite = scanner.nextLine();
+            System.out.println("Введите путь к файлу для записи текста: ");
+            String pathToFileToWrite = scanner.nextLine();
+            return pathToFileToWrite;
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка ввода: " + e.getMessage());
+            throw new RuntimeException("Ошибка ввода пути к файлу: " + e.getMessage());
         }
     }
 
-    protected static void selectFilesForDecryptionStatisticalAnalysis(Scanner scanner) {
+    private static String selectRepresentativeText(Scanner scanner){
         try {
-            System.out.println("Введите путь к файлу с зашифрованным текстом: ");
-            scanner.nextLine();
-            pathToSourceFile = scanner.nextLine();
-            System.out.println("Введите путь к файлу для записи расшифрованного текста: ");
-            pathToFileToWrite = scanner.nextLine();
             System.out.println("Введите пример репрезентативного текста: ");
-            representativeText = scanner.nextLine();
+            String representativeText = scanner.nextLine();
+            return representativeText;
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка ввода: " + e.getMessage());
+            throw new RuntimeException("Ошибка ввода пути к файлу: " + e.getMessage());
         }
     }
 }

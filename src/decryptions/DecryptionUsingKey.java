@@ -8,7 +8,7 @@ import static handlers.AlphabetHandler.findIndexInAlphabet;
 
 public class DecryptionUsingKey {
     private static StringBuilder encryptedText = new StringBuilder();
-    protected static String decryptionUsingKey(int key, String text){
+    private static String decryptionUsingKey(int key, String text){
         if(key > 0 && key < text.length() - 1){
             for (int i = 0; i < text.length(); i++) {
                 char currentChar = text.charAt(i);

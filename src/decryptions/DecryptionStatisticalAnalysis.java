@@ -10,7 +10,7 @@ import static handlers.AlphabetHandler.findIndexInAlphabet;
 
 public class DecryptionStatisticalAnalysis {
 
-    public static String decryptionStatisticalAnalysis(String representativeText, String encryptedText) {
+    private static String decryptionStatisticalAnalysis(String representativeText, String encryptedText) {
         Map<Character, Double> representativeFrequency = calculateLetterFrequency(representativeText);
         Map<Character, Double> encryptedFrequency = calculateLetterFrequency(encryptedText);
         int optimalKey = findOptimalShift(representativeFrequency, encryptedFrequency);

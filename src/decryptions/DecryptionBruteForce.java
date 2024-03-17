@@ -7,7 +7,7 @@ import alphabets.RussianWords;
 import static handlers.AlphabetHandler.findIndexInAlphabet;
 
 public class DecryptionBruteForce {
-    public static String decryptionUsingKey(int key, String encryptedText) {
+    private static String decryptionUsingKey(int key, String encryptedText) {
         StringBuilder decryptedText = new StringBuilder();
         for (int i = 0; i < encryptedText.length(); i++) {
             char currentChar = encryptedText.charAt(i);
@@ -26,7 +26,9 @@ public class DecryptionBruteForce {
         return decryptedText.toString();
     }
 
-    public static int bruteForceKeyFinder(String encryptedText) {
+    private static int bruteForceKeyFinder(String encryptedText) {
+        int threshold = 5;
+
         for (int key = 1; key < RussianAlphabet.ALPHABET.length; key++) { // Key can't be 0
             String decryptedText = decryptionUsingKey(key, encryptedText);
             int foundWords = 0;
@@ -36,7 +38,7 @@ public class DecryptionBruteForce {
                 }
             }
 
-            if (foundWords >= 5) {
+            if (foundWords >= threshold) {
                 return key;
             }
         }
